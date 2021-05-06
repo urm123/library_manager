@@ -77,6 +77,7 @@
                             'method' => 'PUT',
                             'route' => ['author.book.update', $book->id]
                         ]) !!}  
+                        {!! Form::hidden('id', null, ['class' => 'form-control', 'id' => 'book_id']) !!}
                         <div class="form-group">
                             {!! Form::label('book_name', 'Book Name:', ['class' => 'control-label']) !!}
                             {!! Form::text('book_name', null, ['class' => 'form-control', 'id' => 'book_name']) !!}
@@ -116,10 +117,12 @@
             axios.post('{{ route("author.book.get") }}', { 
                 book_id: book_id,
                 _token: '{{csrf_token()}}'
-            }).then(function (response) {   
+            }).then(function (response) { 
+                $('#book_id').val('');  
                 $('#book_name').val('');
                 $('#published_date').val(''); 
  
+                $('#book_id').val(response.data.book.id);
                 $('#book_name').val(response.data.book.book_name);
                 $('#published_date').val(response.data.book.published_date); 
                 $('#personModal').modal('toggle');

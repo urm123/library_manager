@@ -134,7 +134,16 @@ class DashboardController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $book = Books::findOrFail($request->id);   
+        $this->validate($request, [
+            'book_name' => 'required|max:255',
+            'published_date' => 'required|max:255'
+        ]);   
+
+        $input = $request->all(); 
+        $book->fill($input)->save(); 
+        Session::flash('flash_message', 'Book Updated!'); 
+        return redirect()->back();
     }
 
     /**
@@ -146,7 +155,7 @@ class DashboardController extends Controller
     public function destroy(Request $request)
     {
         $book_id = $request->book_id; 
-        $remove = $this->book_id->removeBook($book_id);
+        $remove = $this->book_id->deleteBook($book_id);
 
         if ($remove) {
             return response()->json([

@@ -41,9 +41,7 @@ class BooksRepository
      */
     public function deleteBook(int $book_id)
     {
-        return User::whereId($user_id)->update([
-            'is_active' => 0
-        ]);
+        return Books::where('id', '=', $book_id)->delete();
     } 
 
     /**
