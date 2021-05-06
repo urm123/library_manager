@@ -18,7 +18,7 @@ class AuthorRepository
      */
     public function getAuthors()
     {
-        return User::where('role_id', '=', 2)->get();
+        return User::where('role_id', '=', 2)->get(); // GONO constant damma nm ewa use karapiya
     }
 
     /** 
