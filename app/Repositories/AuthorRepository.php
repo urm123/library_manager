@@ -25,6 +25,7 @@ class AuthorRepository
      * @param $request
      * @return Author
      */
+    // need to add data type and return type for each and every functions
     public function createAuthor($request)
     {
         $user = New User();
