@@ -15,7 +15,7 @@ class CreateBooksTable extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('author')->unsigned();
+            $table->integer('author')->unsigned(); // this column data type must be matched with the parent table PK data type. Use softdelete every where
             $table->foreign('author')->references('id')->on('users');  
             $table->string('book_name');
             $table->string('published_date'); 
