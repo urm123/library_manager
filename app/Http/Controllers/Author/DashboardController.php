@@ -24,6 +24,7 @@ class DashboardController extends Controller
      */
     public function __construct()
     { 
+        // Middleware already applied to the route. why do you do same thing in here ?
         $this->middleware('auth'); 
         $this->author = new AuthorRepository; 
         $this->books = new BooksRepository; 
@@ -40,9 +41,9 @@ class DashboardController extends Controller
         $books = $this->books->getAuthorBooks($author_id); 
         foreach ($books as $book) {
             if ($book->deleted_at) {
-                $book->deleted = true;
+                $book->deleted = true; // whats this ?
             } else {
-                $book->deleted = false;
+                $book->deleted = false; // whats this ?
             }   
         }  
 
@@ -67,6 +68,8 @@ class DashboardController extends Controller
      */
     public function store(Request $request)
     {
+        // move validations to the seperate requiret file
+        
         $this->validate($request, [ 
             'book_name' => 'required|string|max:255',
             'published_date' => 'required|string|max:255' 
@@ -75,6 +78,8 @@ class DashboardController extends Controller
         $author_id = Auth::user()->id; 
         $author = User::findOrFail($author_id); 
         if($author['is_active'] == 1){ 
+            // dont do it here. you can move this $checkIfExist is to the validations
+            
             $checkIfExist = Books::where('author', '=', $author_id)->where('book_name', '=', $request->book_name)->first();
             if ($checkIfExist === null) { 
                 $request->request->set('author', $author_id);
@@ -83,6 +88,11 @@ class DashboardController extends Controller
                 if($book){
                     Session::flash('flash_message', 'Book Added!'); 
                     return redirect()->back();
+                    
+                    // you can do that in single line like
+                    // return redirect()->route('category.index')->withFlashSuccess('category created.'); or
+                    // return redirect()->back()->withFlashDanger('Error. Something went wrong.');
+                    
                 }else{
                     Session::flash('flash_error_message', 'An error occured!'); 
                     return redirect()->back();
@@ -105,7 +115,7 @@ class DashboardController extends Controller
      */
     public function show(Request $request)
     {
-        $book_id = $request->book_id; 
+        $book_id = $request->book_id; // not required because no reuse. just do like $request->book_id pass to the findOrFail
         $book = Books::findOrFail($book_id); 
 
         return response()->json(['book' => $book]); 
@@ -155,7 +165,7 @@ class DashboardController extends Controller
     public function destroy(Request $request)
     {
         $book_id = $request->book_id; 
-        $remove = $this->book_id->deleteBook($book_id);
+        $remove = $this->book_id->deleteBook($book_id); // whats this ? this will work ? how can you call function using varialble ?
 
         if ($remove) {
             return response()->json([
