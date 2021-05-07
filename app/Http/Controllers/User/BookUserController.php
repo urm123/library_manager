@@ -22,8 +22,7 @@ class BookUserController extends Controller
      * @return void
      */
     public function __construct()
-    {
-        // $this->middleware('auth'); 
+    { 
         $this->author = new AuthorRepository; 
         $this->books = new BooksRepository; 
     }
@@ -35,7 +34,7 @@ class BookUserController extends Controller
      */
     public function index()
     {
-        return view('pages.landing');
+        return view('pages.frontend.landing');
     }
 
     /**
@@ -43,10 +42,9 @@ class BookUserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function searchRelatedBooks(Request $request)
-    {
-        $keyword = $request->keyword; 
-        $books = $this->books->searchBooks($keyword); 
-        $authors = $this->author->searchAuthors($keyword);  
+    { 
+        $books = $this->books->searchBooks($request->keyword); 
+        $authors = $this->author->searchAuthors($request->keyword);  
         $suggestions = $books->merge ($authors);   
 
         if(!$suggestions->isEmpty()){

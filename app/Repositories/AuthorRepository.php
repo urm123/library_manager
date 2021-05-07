@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\User;
+use App\Constants\AppConstant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -16,9 +17,8 @@ class AuthorRepository
     /**
      * @return mixed
      */
-    public function getAuthors()
-    {
-        return User::where('role_id', '=', 2)->get();
+    public function getAuthors() : object {  
+        return User::where('role_id', '=', AppConstant::AUTHOR_ROLE)->get();
     }
 
     /** 
@@ -66,6 +66,6 @@ class AuthorRepository
      */
     public function searchAuthors(String $keyword) : Collection {   
         return $authors = User::where ('first_name', 'like', '%'. $keyword. '%')
-        ->where('role_id', '=', 2)->get(); 
+        ->where('role_id', '=', AppConstant::AUTHOR_ROLE)->get(); 
     } 
 }

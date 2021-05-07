@@ -17,8 +17,7 @@ class DashboardController extends Controller
      * DashboardController constructor. 
      */
     public function __construct()
-    { 
-        $this->middleware('auth'); 
+    {  
         $this->author = new AuthorRepository; 
     }
 
@@ -29,16 +28,8 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $authors = $this->author->getAuthors(); 
-        foreach ($authors as $author) {
-            if ($author->deleted_at) {
-                $author->deleted = true;
-            } else {
-                $author->deleted = false;
-            }   
-        }  
-
-        return view('pages.author.authors', ['authors' => $authors]);
+        $authors = $this->author->getAuthors();   
+        return view('pages.backend.author.authors', ['authors' => $authors]);
     }
 
     /**
@@ -48,7 +39,7 @@ class DashboardController extends Controller
      */
     public function create()
     {
-        return View('pages.author.add-author'); 
+        return View('pages.backend.author.add-author'); 
     }
 
     /**
@@ -67,8 +58,8 @@ class DashboardController extends Controller
             'telephone' => 'required|string|min:10|max:20', 
             'role' => 'required'
         ]);  
-        $author = $this->author->createAuthor($request); 
 
+        $author = $this->author->createAuthor($request);  
         if($author){
             Session::flash('flash_message', 'Author Added!'); 
             return redirect()->back();
@@ -85,10 +76,8 @@ class DashboardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request)
-    {
-        $user_id = $request->author_id; 
-        $author = User::findOrFail($user_id); 
-
+    { 
+        $author = User::findOrFail($request->author_id);  
         return response()->json(['author' => $author]); 
     }
 
@@ -122,9 +111,8 @@ class DashboardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
-    {
-        $user_id = $request->user_id; 
-        $deactive = $this->author->deactive($user_id);
+    { 
+        $deactive = $this->author->deactive($request->user_id);
 
         if ($deactive) {
             return response()->json([
@@ -139,9 +127,9 @@ class DashboardController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function restore(Request $request)
-    {
-        $user_id = $request->user_id;
-        $restore = $this->author->restore($user_id);
+    { 
+        $restore = $this->author->restore($request->user_id);
+
         if ($restore) {
             return response()->json([
                 'message' => 'success',

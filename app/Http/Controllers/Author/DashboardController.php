@@ -23,8 +23,7 @@ class DashboardController extends Controller
      * DashboardController constructor. 
      */
     public function __construct()
-    { 
-        $this->middleware('auth'); 
+    {  
         $this->author = new AuthorRepository; 
         $this->books = new BooksRepository; 
     }
@@ -37,16 +36,9 @@ class DashboardController extends Controller
     public function index()
     {
         $author_id = Auth::user()->id; 
-        $books = $this->books->getAuthorBooks($author_id); 
-        foreach ($books as $book) {
-            if ($book->deleted_at) {
-                $book->deleted = true;
-            } else {
-                $book->deleted = false;
-            }   
-        }  
+        $books = $this->books->getAuthorBooks($author_id);   
 
-        return view('pages.books.books', ['books' => $books]);
+        return view('pages.backend.books.books', ['books' => $books]);
     }
 
     /**
@@ -56,7 +48,7 @@ class DashboardController extends Controller
      */
     public function create()
     {
-        return View('pages.books.add-new-book'); 
+        return View('pages.backend.books.add-new-book'); 
     }
 
     /**
@@ -104,10 +96,8 @@ class DashboardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request)
-    {
-        $book_id = $request->book_id; 
-        $book = Books::findOrFail($book_id); 
-
+    { 
+        $book = Books::findOrFail($request->book_id);  
         return response()->json(['book' => $book]); 
     }
 
@@ -118,10 +108,8 @@ class DashboardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request)
-    {
-        $book_id = $request->book_id; 
-        $book = Books::findOrFail($book_id); 
-
+    { 
+        $book = Books::findOrFail($request->book_id);  
         return response()->json(['book' => $book]); 
     }
 
@@ -133,15 +121,15 @@ class DashboardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        $book = Books::findOrFail($request->id);   
+    { 
         $this->validate($request, [
             'book_name' => 'required|max:255',
             'published_date' => 'required|max:255'
-        ]);   
-
+        ]);    
+        $book = Books::findOrFail($request->id); 
         $input = $request->all(); 
         $book->fill($input)->save(); 
+
         Session::flash('flash_message', 'Book Updated!'); 
         return redirect()->back();
     }
@@ -153,9 +141,8 @@ class DashboardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
-    {
-        $book_id = $request->book_id; 
-        $remove = $this->book_id->deleteBook($book_id);
+    { 
+        $remove = $this->book_id->deleteBook($request->book_id);
 
         if ($remove) {
             return response()->json([
